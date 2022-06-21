@@ -37,12 +37,13 @@ class Attention(nn.Module): # Extend PyTorch's Module class
         # Stack 1
         
         ques_emb_1 = self.fc11(ques_feat) 
-        ques_emb_1 = self.fc111(ques_emb_1) # [batch_size, att_size]
+        ques_emb_1 = self.fc111(ques_emb_1) # [batch_size, 640]
         img_emb_1 = self.fc12(img_feat)
-        img_emb_1 = self.fc121(img_emb_1)
+        img_emb_1 = self.fc121(img_emb_1) # [batch_size, 588, 640]
 
         h1 = self.tan(ques_emb_1.view(B, 1, self.att_size) + img_emb_1)
-        h1_emb = self.linear_second(h1) 
+        h1_emb = self.linear_second(h1) # [batch_size, 588, 512]
+        h1_emb = self.fc13(h1_emb) # [batch_size, 588, 1]
         
         p1 = self.sf(h1_emb.view(-1, self.img_seq_size)).view(B, 1, self.img_seq_size)
 
